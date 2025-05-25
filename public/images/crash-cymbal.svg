@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shadow -->
+  <ellipse cx="40" cy="43" rx="35" ry="32" fill="rgba(0,0,0,0.2)"/>
+  
+  <!-- Cymbal stand -->
+  <line x1="40" y1="40" x2="40" y2="70" stroke="#444" stroke-width="3"/>
+  <ellipse cx="40" cy="70" rx="8" ry="3" fill="#666" stroke="#444" stroke-width="1"/>
+  
+  <!-- Crash cymbal -->
+  <ellipse cx="40" cy="40" rx="35" ry="32" fill="#ffd700" stroke="#e6c200" stroke-width="2"/>
+  
+  <!-- Cymbal concentric rings -->
+  <ellipse cx="40" cy="40" rx="28" ry="25" fill="none" stroke="#e6c200" stroke-width="1" opacity="0.5"/>
+  <ellipse cx="40" cy="40" rx="21" ry="19" fill="none" stroke="#e6c200" stroke-width="1" opacity="0.3"/>
+  
+  <!-- Cymbal bell -->
+  <ellipse cx="40" cy="40" rx="6" ry="5" fill="#e6c200" stroke="#cc9900" stroke-width="1"/>
+  
+  <!-- Cymbal mount -->
+  <ellipse cx="40" cy="40" rx="3" ry="2" fill="#666" stroke="#444" stroke-width="1"/>
+  
+  <!-- Brand text -->
+  <text x="40" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="5" fill="#cc9900">CRASH</text>
+</svg> 

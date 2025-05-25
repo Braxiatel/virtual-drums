@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shadow -->
+  <ellipse cx="40" cy="43" rx="35" ry="32" fill="rgba(0,0,0,0.2)"/>
+  
+  <!-- Drum shell -->
+  <ellipse cx="40" cy="40" rx="35" ry="32" fill="#c8860d" stroke="#a06b0a" stroke-width="2"/>
+  
+  <!-- Drum head -->
+  <ellipse cx="40" cy="40" rx="30" ry="27" fill="#f8f6f0" stroke="#d4d4d4" stroke-width="1"/>
+  
+  <!-- Snare strainer (left side) -->
+  <rect x="8" y="35" width="8" height="10" rx="2" fill="#666" stroke="#444" stroke-width="1"/>
+  
+  <!-- Snare strainer (right side) -->
+  <rect x="64" y="35" width="8" height="10" rx="2" fill="#666" stroke="#444" stroke-width="1"/>
+  
+  <!-- Snare wires representation -->
+  <g stroke="#888" stroke-width="0.5" opacity="0.6">
+    <line x1="16" y1="40" x2="64" y2="40"/>
+    <line x1="16" y1="38" x2="64" y2="38"/>
+    <line x1="16" y1="42" x2="64" y2="42"/>
+    <line x1="16" y1="36" x2="64" y2="36"/>
+    <line x1="16" y1="44" x2="64" y2="44"/>
+  </g>
+  
+  <!-- Brand text -->
+  <text x="40" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#888">SNARE</text>
+</svg> 

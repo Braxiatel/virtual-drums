@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shadow -->
+  <ellipse cx="60" cy="65" rx="50" ry="45" fill="rgba(0,0,0,0.2)"/>
+  
+  <!-- Drum shell -->
+  <ellipse cx="60" cy="60" rx="50" ry="45" fill="#2c1810" stroke="#1a0f08" stroke-width="2"/>
+  
+  <!-- Drum head (larger circle) -->
+  <ellipse cx="60" cy="60" rx="45" ry="40" fill="#f8f6f0" stroke="#d4d4d4" stroke-width="1"/>
+  
+  <!-- Drum head inner circle -->
+  <ellipse cx="60" cy="60" rx="35" ry="30" fill="#ffffff" stroke="#e5e5e5" stroke-width="1"/>
+  
+  <!-- Center hole/port -->
+  <ellipse cx="60" cy="60" rx="8" ry="6" fill="#1a0f08"/>
+  
+  <!-- Brand logo placeholder -->
+  <text x="60" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888">KICK</text>
+</svg> 

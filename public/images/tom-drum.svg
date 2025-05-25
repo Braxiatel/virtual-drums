@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="70" height="70" viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shadow -->
+  <ellipse cx="35" cy="38" rx="30" ry="27" fill="rgba(0,0,0,0.2)"/>
+  
+  <!-- Drum shell -->
+  <ellipse cx="35" cy="35" rx="30" ry="27" fill="#8B4513" stroke="#654321" stroke-width="2"/>
+  
+  <!-- Drum head -->
+  <ellipse cx="35" cy="35" rx="25" ry="22" fill="#f8f6f0" stroke="#d4d4d4" stroke-width="1"/>
+  
+  <!-- Tom mount (top) -->
+  <rect x="32" y="8" width="6" height="12" rx="3" fill="#666" stroke="#444" stroke-width="1"/>
+  
+  <!-- Tom arm connector -->
+  <ellipse cx="35" cy="14" rx="4" ry="3" fill="#888" stroke="#666" stroke-width="1"/>
+  
+  <!-- Brand text -->
+  <text x="35" y="28" text-anchor="middle" font-family="Arial, sans-serif" font-size="5" fill="#888">TOM</text>
+</svg> 
