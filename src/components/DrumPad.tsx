@@ -39,6 +39,7 @@ export const DrumPad = ({ drum, className = '' }: DrumPadProps) => {
   return (
     <motion.div
       className={`relative cursor-pointer select-none ${className}`}
+      data-drum={drum}
       onClick={handleClick}
       style={containerStyle}
       whileHover={{ scale: 1.02 }}

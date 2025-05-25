@@ -33,7 +33,7 @@ export const PulsatingSpeaker = ({ gameStartTime, currentTime, bpm }: PulsatingS
   }, [currentTime, gameStartTime, eighthNoteInterval, isPulsing]);
 
   return (
-    <div className="flex flex-col items-center space-y-4">
+    <div className="pulsating-speaker flex flex-col items-center space-y-4">
       {/* Dreamy Speaker Icon */}
       <motion.div
         className="relative"

@@ -188,7 +188,7 @@ export const RhythmGame = ({ beatMap, onGameComplete }: RhythmGameProps) => {
   return (
     <div className="w-full max-w-4xl mx-auto">
       {/* Game HUD */}
-      <div className="mb-6 grid grid-cols-5 gap-4 text-center">
+      <div className="game-hud mb-6 grid grid-cols-5 gap-4 text-center">
         <div className="bg-black/50 rounded-lg p-3">
           <div className="text-sm text-gray-400">Score</div>
           <div className="text-2xl font-bold text-white">{gameState.score}</div>

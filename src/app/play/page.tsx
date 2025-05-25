@@ -151,6 +151,7 @@ export default function PlayPage() {
                 return (
                   <motion.div
                     key={beatMap.name}
+                    data-track={key}
                     className="relative bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 rounded-2xl border-2 border-gray-600 shadow-2xl overflow-hidden"
                     whileHover={{ scale: 1.01, y: -4 }}
                     initial={{ x: -100, opacity: 0 }}
@@ -198,7 +199,7 @@ export default function PlayPage() {
                       </div>
 
                       {/* Center Section - BPM Control */}
-                      <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-600 mx-6">
+                      <div className="bpm-control bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-600 mx-6">
                         <div className="text-center">
                           <div className="text-xs text-gray-400 mb-3">TEMPO CONTROL</div>
                           

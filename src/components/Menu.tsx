@@ -2,27 +2,44 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { useTutorialStore } from '../stores/tutorialStore';
 
 interface MenuProps {
   isOpen: boolean;
   onClose: () => void;
+  onStartTutorial?: () => void;
 }
 
-export const Menu = ({ isOpen, onClose }: MenuProps) => {
+export const Menu = ({ isOpen, onClose, onStartTutorial }: MenuProps) => {
   const router = useRouter();
+  const { setTutorialOpen } = useTutorialStore();
 
   const handleNavigation = (path: string) => {
     onClose();
     router.push(path);
   };
 
+  const handleTutorial = () => {
+    onClose();
+    setTutorialOpen(true);
+  };
+
   const menuItems = [
+    {
+      title: 'Tutorial',
+      description: 'Learn how to play drums',
+      icon: '🎓',
+      action: handleTutorial,
+      color: 'from-green-500 to-emerald-500',
+      dataAttribute: 'tutorial'
+    },
     {
       title: 'Beats',
       description: 'Play rhythm games',
       icon: '🎵',
       path: '/play',
       color: 'from-purple-500 to-pink-500',
+      dataAttribute: 'beats'
     },
     {
       title: 'Settings',
@@ -30,6 +47,7 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
       icon: '⚙️',
       path: '/settings',
       color: 'from-blue-500 to-cyan-500',
+      dataAttribute: 'settings'
     },
   ];
 
@@ -65,11 +83,12 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
               <div className="space-y-4">
                 {menuItems.map((item) => (
                   <motion.button
-                    key={item.path}
+                    key={item.title}
+                    data-menu-item={item.dataAttribute}
                     className={`w-full p-4 rounded-xl bg-gradient-to-r ${item.color} text-white font-semibold shadow-lg hover:shadow-xl transition-shadow`}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => handleNavigation(item.path)}
+                    onClick={item.action || (() => handleNavigation(item.path!))}
                   >
                     <div className="flex items-center space-x-3">
                       <span className="text-2xl">{item.icon}</span>
