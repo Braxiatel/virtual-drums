@@ -126,15 +126,6 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     position: 'left',
     page: 'play'
   },
-  {
-    id: 'start-track',
-    title: '▶️ Start Your First Track',
-    description: 'Click START to begin your first rhythm challenge! The track will start with a countdown.',
-    target: 'button:has-text("START")',
-    position: 'top',
-    action: 'click',
-    page: 'play'
-  },
   
   // Rhythm Game Mechanics
   {
@@ -330,8 +321,28 @@ export const Tutorial = ({ isOpen, onClose, onComplete, currentStep = 0, onStepC
           const [, selector, text] = match;
           const elements = document.querySelectorAll(selector);
           element = Array.from(elements).find(el => 
-            el.textContent?.trim() === text
+            el.textContent?.trim().includes(text) || 
+            el.innerHTML?.includes(text)
           ) || null;
+        }
+      } else if (step.target!.includes(',')) {
+        // Handle multiple selectors separated by commas
+        const selectors = step.target!.split(',').map(s => s.trim());
+        for (const selector of selectors) {
+          if (selector.includes(':has-text(')) {
+            const match = selector.match(/^(.+):has-text\("(.+)"\)$/);
+            if (match) {
+              const [, sel, text] = match;
+              const elements = document.querySelectorAll(sel);
+              element = Array.from(elements).find(el => 
+                el.textContent?.trim().includes(text) || 
+                el.innerHTML?.includes(text)
+              ) || null;
+            }
+          } else {
+            element = document.querySelector(selector);
+          }
+          if (element) break;
         }
       } else {
         // Use regular CSS selector
@@ -340,8 +351,6 @@ export const Tutorial = ({ isOpen, onClose, onComplete, currentStep = 0, onStepC
       
       if (element) {
         setHighlightedElement(element);
-        // Don't auto-scroll to avoid misalignment issues
-        // element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         console.log(`Tutorial: Found element for step "${step.id}":`, element);
         return true;
       }
@@ -400,6 +409,11 @@ export const Tutorial = ({ isOpen, onClose, onComplete, currentStep = 0, onStepC
 
   if (!isOpen) return null;
 
+  // Check if we're on steps where we want to show the background clearly
+  const isSettingsStep = step.id === 'settings-intro';
+  const isTrackSelectionStep = step.id === 'track-selection' || step.id === 'difficulty-levels' || step.id === 'bpm-control';
+  const shouldReduceBlur = isSettingsStep || isTrackSelectionStep;
+
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-50 pointer-events-none">
@@ -407,7 +421,7 @@ export const Tutorial = ({ isOpen, onClose, onComplete, currentStep = 0, onStepC
         {highlightedElement ? (
           // When highlighting an element, show overlay but allow clicks through
           <>
-            <div className="absolute inset-0 bg-black/70" />
+            <div className={`absolute inset-0 ${shouldReduceBlur ? 'bg-black/30' : 'bg-black/70'}`} />
 
             {/* Highlight border around the element */}
             <div
@@ -423,8 +437,8 @@ export const Tutorial = ({ isOpen, onClose, onComplete, currentStep = 0, onStepC
             />
           </>
         ) : (
-          // When no element is highlighted, use simple overlay
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+          // When no element is highlighted, use simple overlay - remove blur for settings step
+          <div className={`absolute inset-0 ${shouldReduceBlur ? 'bg-black/30' : 'bg-black/70 backdrop-blur-sm'}`} />
         )}
 
         {/* Tutorial Card */}
@@ -470,7 +484,7 @@ export const Tutorial = ({ isOpen, onClose, onComplete, currentStep = 0, onStepC
             <p className="text-gray-200 mb-6 leading-relaxed">{step.description}</p>
 
             {/* Action prompt */}
-            {step.action && isWaitingForAction && (
+            {step.action && isWaitingForAction && step.action !== 'click' && (
               <motion.div
                 className="bg-yellow-500/20 border border-yellow-500/50 rounded-lg p-3 mb-4"
                 animate={{ scale: [1, 1.02, 1] }}
@@ -478,7 +492,6 @@ export const Tutorial = ({ isOpen, onClose, onComplete, currentStep = 0, onStepC
               >
                 <div className="text-yellow-300 text-sm font-semibold">
                   {step.action === 'key' && `Press the "${step.actionData?.toUpperCase()}" key to continue`}
-                  {step.action === 'click' && 'Click the highlighted element to continue'}
                   {step.action === 'wait' && 'Take your time to practice, then click Next when ready'}
                 </div>
               </motion.div>
