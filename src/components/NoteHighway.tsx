@@ -26,9 +26,9 @@ interface VisibleNote {
 
 const HIGHWAY_HEIGHT = 600;
 const HIT_ZONE_Y = 100; // Hit zone moved a bit lower
-const HIT_WINDOW_PERFECT = 50; // ms
-const HIT_WINDOW_GOOD = 100; // ms
-const HIT_WINDOW_MISS = 150; // ms
+const HIT_WINDOW_PERFECT = 75; // ms - Made slightly more forgiving
+const HIT_WINDOW_GOOD = 150; // ms - Made more forgiving
+const HIT_WINDOW_MISS = 200; // ms - Made more forgiving
 
 // Lane configuration for different drums - Updated with dreamy pastel colors
 const LANE_CONFIG = {
@@ -63,16 +63,33 @@ export const NoteHighway = ({
 }: NoteHighwayProps) => {
   const [visibleNotes, setVisibleNotes] = useState<VisibleNote[]>([]);
   const processedNotes = useRef(new Set<string>());
+  const visibleNotesRef = useRef<VisibleNote[]>([]);
+
+  // Update ref whenever visibleNotes changes
+  useEffect(() => {
+    visibleNotesRef.current = visibleNotes;
+  }, [visibleNotes]);
 
   // Handle drum hits
   const handleDrumHit = useCallback((drum: DrumType) => {
     const timeInGame = currentTime - gameStartTime;
     
+    // Use ref to get current notes (avoids stale closure)
+    const currentVisibleNotes = visibleNotesRef.current;
+    
+    // Debug: Log hit attempt
+    console.log(`Hit attempt: ${drum} at time ${timeInGame.toFixed(0)}ms`);
+    console.log(`Available notes:`, currentVisibleNotes.filter(n => !n.isHit).map(n => ({
+      drum: n.drum,
+      time: n.time,
+      timeDiff: Math.abs(n.time - timeInGame).toFixed(0)
+    })));
+    
     // Find the closest note in the hit window for this drum
     let closestNote: VisibleNote | null = null;
     let closestTimeDiff = Infinity;
 
-    visibleNotes.forEach(note => {
+    currentVisibleNotes.forEach(note => {
       if (!note.isHit) {
         // Allow hi-hat cross-compatibility: either H or Y key can hit either hi-hat type
         const isHiHatMatch = (drum === 'closedHiHat' || drum === 'openHiHat') && 
@@ -90,7 +107,10 @@ export const NoteHighway = ({
     });
 
     // Early return if no note found
-    if (!closestNote) return;
+    if (!closestNote) {
+      console.log(`No note found for ${drum} hit`);
+      return;
+    }
 
     // Determine hit quality
     let timing: 'perfect' | 'good' | 'miss';
@@ -106,6 +126,8 @@ export const NoteHighway = ({
       timing = 'miss';
       score = 0;
     }
+
+    console.log(`Hit result: ${timing} (${closestTimeDiff.toFixed(0)}ms diff)`);
 
     // Store the drum type and note ID for use in callbacks
     const hitDrumType = (closestNote as VisibleNote).drum;
@@ -127,7 +149,7 @@ export const NoteHighway = ({
       score,
       timestamp: currentTime,
     });
-  }, [currentTime, gameStartTime, visibleNotes, onNoteHit]);
+  }, [currentTime, gameStartTime, onNoteHit]); // Removed visibleNotes dependency
 
   // Calculate note positions and manage visible notes
   useEffect(() => {
