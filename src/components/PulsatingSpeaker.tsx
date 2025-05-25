@@ -36,152 +36,202 @@ export const PulsatingSpeaker = ({ gameStartTime, currentTime, bpm }: PulsatingS
 
   return (
     <div className="flex flex-col items-center space-y-4">
-      {/* Speaker Icon */}
+      {/* Dreamy Speaker Icon */}
       <motion.div
         className="relative"
         animate={{
-          scale: isPulsing ? 1.3 : 1.0,
+          scale: isPulsing ? 1.2 : 1.0,
         }}
         transition={{
-          duration: 0.15,
+          duration: 0.2,
           ease: "easeOut"
         }}
       >
-        {/* Glow effect */}
+        {/* Soft glow effect */}
         <motion.div
-          className="absolute inset-0 rounded-full"
+          className="absolute inset-0 rounded-2xl"
           animate={{
             boxShadow: isPulsing 
-              ? '0 0 30px rgba(59, 130, 246, 0.6), 0 0 60px rgba(59, 130, 246, 0.3)'
-              : '0 0 10px rgba(59, 130, 246, 0.2)'
+              ? '0 0 40px rgba(147, 51, 234, 0.4), 0 0 80px rgba(236, 72, 153, 0.2), 0 0 120px rgba(59, 130, 246, 0.1)'
+              : '0 0 20px rgba(147, 51, 234, 0.2), 0 0 40px rgba(236, 72, 153, 0.1)'
           }}
-          transition={{ duration: 0.15 }}
+          transition={{ duration: 0.2 }}
         />
         
-        {/* Speaker SVG */}
+        {/* Speaker SVG with dreamy styling */}
         <div className="relative z-10">
           <svg 
-            width="192" 
-            height="192" 
-            viewBox="0 0 192 192" 
-            className={`transition-colors duration-150 ${
-              isPulsing ? 'text-blue-400' : 'text-gray-400'
+            width="320" 
+            height="320" 
+            viewBox="0 0 160 160" 
+            className={`transition-all duration-200 ${
+              isPulsing ? 'drop-shadow-lg' : 'drop-shadow-md'
             }`}
           >
-            {/* Speaker Cabinet Shadow */}
-            <rect x="4" y="4" width="120" height="180" rx="8" fill="rgba(0,0,0,0.3)"/>
+            {/* Speaker Cabinet with glassmorphism */}
+            <rect x="10" y="10" width="100" height="140" rx="12" fill="url(#dreamyGradient)" stroke="rgba(255,255,255,0.3)" strokeWidth="2"/>
             
-            {/* Speaker Cabinet */}
-            <rect x="0" y="0" width="120" height="180" rx="8" fill="#1a1a1a" stroke="#333" strokeWidth="2"/>
+            {/* Soft inner glow */}
+            <rect x="15" y="15" width="90" height="130" rx="8" fill="url(#innerGlow)" opacity="0.6"/>
             
-            {/* Cabinet Wood Grain Effect */}
-            <rect x="4" y="4" width="112" height="172" rx="6" fill="url(#woodGrain)"/>
+            {/* Tweeter with soft styling */}
+            <circle cx="60" cy="40" r="15" fill="url(#tweeterGradient)" stroke="rgba(255,255,255,0.2)" strokeWidth="1"/>
+            <circle cx="60" cy="40" r="10" fill="url(#tweeterInner)"/>
+            <circle cx="60" cy="40" r="6" fill="rgba(147, 51, 234, 0.6)"/>
+            <circle cx="60" cy="40" r="3" fill="rgba(255, 255, 255, 0.8)"/>
             
-            {/* Tweeter Housing (Top) */}
-            <circle cx="60" cy="45" r="18" fill="#2a2a2a" stroke="#444" strokeWidth="1"/>
-            <circle cx="60" cy="45" r="12" fill="#1a1a1a"/>
-            <circle cx="60" cy="45" r="8" fill="#333"/>
-            <circle cx="60" cy="45" r="4" fill="currentColor"/>
+            {/* Main Woofer with dreamy gradient */}
+            <circle cx="60" cy="100" r="35" fill="url(#wooferDreamy)" stroke="rgba(255,255,255,0.2)" strokeWidth="2"/>
+            <circle cx="60" cy="100" r="28" fill="url(#wooferCone)"/>
+            <circle cx="60" cy="100" r="20" fill="url(#wooferInner)"/>
             
-            {/* Main Woofer Housing */}
-            <circle cx="60" cy="120" r="45" fill="#2a2a2a" stroke="#444" strokeWidth="2"/>
+            {/* Woofer Center with soft glow */}
+            <circle cx="60" cy="100" r="10" fill="url(#centerGradient)" stroke="rgba(255,255,255,0.3)" strokeWidth="1"/>
+            <circle cx="60" cy="100" r="6" fill="rgba(236, 72, 153, 0.4)"/>
             
-            {/* Woofer Cone */}
-            <circle cx="60" cy="120" r="38" fill="url(#wooferGradient)"/>
-            <circle cx="60" cy="120" r="32" fill="url(#coneGradient)"/>
-            <circle cx="60" cy="120" r="25" fill="url(#innerCone)"/>
-            
-            {/* Woofer Center Cap */}
-            <circle cx="60" cy="120" r="12" fill="#1a1a1a" stroke="#333" strokeWidth="1"/>
-            <circle cx="60" cy="120" r="8" fill="#2a2a2a"/>
-            
-            {/* Speaker Grille Holes Pattern */}
-            <g opacity="0.3">
-              {/* Top section holes */}
-              <circle cx="30" cy="25" r="1.5" fill="#666"/>
-              <circle cx="45" cy="25" r="1.5" fill="#666"/>
-              <circle cx="75" cy="25" r="1.5" fill="#666"/>
-              <circle cx="90" cy="25" r="1.5" fill="#666"/>
-              
-              {/* Around tweeter */}
-              <circle cx="35" cy="45" r="1" fill="#666"/>
-              <circle cx="85" cy="45" r="1" fill="#666"/>
-              <circle cx="60" cy="20" r="1" fill="#666"/>
-              <circle cx="60" cy="70" r="1" fill="#666"/>
-              
-              {/* Around woofer */}
-              <circle cx="20" cy="120" r="1.5" fill="#666"/>
-              <circle cx="100" cy="120" r="1.5" fill="#666"/>
-              <circle cx="60" cy="80" r="1.5" fill="#666"/>
-              <circle cx="60" cy="160" r="1.5" fill="#666"/>
-              
-              {/* Bottom section */}
-              <circle cx="30" cy="155" r="1.5" fill="#666"/>
-              <circle cx="45" cy="155" r="1.5" fill="#666"/>
-              <circle cx="75" cy="155" r="1.5" fill="#666"/>
-              <circle cx="90" cy="155" r="1.5" fill="#666"/>
+            {/* Soft decorative elements */}
+            <g opacity="0.4">
+              <circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.6)"/>
+              <circle cx="95" cy="25" r="1" fill="rgba(255,255,255,0.6)"/>
+              <circle cx="25" cy="135" r="1" fill="rgba(255,255,255,0.6)"/>
+              <circle cx="95" cy="135" r="1" fill="rgba(255,255,255,0.6)"/>
             </g>
             
-            {/* Brand Logo Area */}
-            <rect x="20" y="8" width="80" height="12" rx="2" fill="rgba(255,255,255,0.1)"/>
-            <text x="60" y="16" textAnchor="middle" fill="currentColor" fontFamily="Arial, sans-serif" fontSize="8" fontWeight="bold">VIRTUAL DRUMS</text>
+            {/* Brand area with glassmorphism */}
+            <rect x="20" y="15" width="80" height="10" rx="5" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" strokeWidth="1"/>
+            <text x="60" y="22" textAnchor="middle" fill="rgba(255,255,255,0.8)" fontFamily="Arial, sans-serif" fontSize="6" fontWeight="bold">VIRTUAL DRUMS</text>
             
-            {/* Bass Port */}
-            <rect x="25" y="165" width="70" height="8" rx="4" fill="#0a0a0a" stroke="#333" strokeWidth="1"/>
-            
-            {/* Sound Waves */}
+            {/* Dreamy sound waves */}
             <g className="sound-waves">
-              <path d="M130 60 Q140 80 140 120 Q140 160 130 180" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.6"/>
-              <path d="M140 40 Q155 70 155 120 Q155 170 140 200" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.4"/>
-              <path d="M150 20 Q170 60 170 120 Q170 180 150 220" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.3"/>
+              <motion.path 
+                d="M115 50 Q125 70 125 100 Q125 130 115 150" 
+                stroke="url(#waveGradient1)" 
+                strokeWidth="2" 
+                fill="none" 
+                strokeLinecap="round" 
+                opacity={isPulsing ? 0.8 : 0.4}
+                animate={{
+                  pathLength: isPulsing ? [0, 1] : 1,
+                  opacity: isPulsing ? [0.4, 0.8, 0.4] : 0.4
+                }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+              />
+              <motion.path 
+                d="M125 30 Q140 60 140 100 Q140 140 125 170" 
+                stroke="url(#waveGradient2)" 
+                strokeWidth="2" 
+                fill="none" 
+                strokeLinecap="round" 
+                opacity={isPulsing ? 0.6 : 0.3}
+                animate={{
+                  pathLength: isPulsing ? [0, 1] : 1,
+                  opacity: isPulsing ? [0.3, 0.6, 0.3] : 0.3
+                }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+              />
+              <motion.path 
+                d="M135 10 Q155 50 155 100 Q155 150 135 190" 
+                stroke="url(#waveGradient3)" 
+                strokeWidth="2" 
+                fill="none" 
+                strokeLinecap="round" 
+                opacity={isPulsing ? 0.4 : 0.2}
+                animate={{
+                  pathLength: isPulsing ? [0, 1] : 1,
+                  opacity: isPulsing ? [0.2, 0.4, 0.2] : 0.2
+                }}
+                transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
+              />
             </g>
             
-            {/* Gradients and Patterns */}
+            {/* Dreamy gradients */}
             <defs>
-              <linearGradient id="woodGrain" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style={{stopColor:'#2a2a2a', stopOpacity:1}} />
-                <stop offset="50%" style={{stopColor:'#1a1a1a', stopOpacity:1}} />
-                <stop offset="100%" style={{stopColor:'#0a0a0a', stopOpacity:1}} />
+              <linearGradient id="dreamyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style={{stopColor:'rgba(147, 51, 234, 0.3)', stopOpacity:1}} />
+                <stop offset="50%" style={{stopColor:'rgba(236, 72, 153, 0.2)', stopOpacity:1}} />
+                <stop offset="100%" style={{stopColor:'rgba(59, 130, 246, 0.3)', stopOpacity:1}} />
               </linearGradient>
               
-              <radialGradient id="wooferGradient" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" style={{stopColor:'#4a4a4a', stopOpacity:1}} />
-                <stop offset="100%" style={{stopColor:'#1a1a1a', stopOpacity:1}} />
+              <radialGradient id="innerGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" style={{stopColor:'rgba(255, 255, 255, 0.1)', stopOpacity:1}} />
+                <stop offset="100%" style={{stopColor:'rgba(255, 255, 255, 0.05)', stopOpacity:1}} />
               </radialGradient>
               
-              <radialGradient id="coneGradient" cx="30%" cy="30%" r="70%">
-                <stop offset="0%" style={{stopColor:'#6a6a6a', stopOpacity:1}} />
-                <stop offset="50%" style={{stopColor:'#3a3a3a', stopOpacity:1}} />
-                <stop offset="100%" style={{stopColor:'#1a1a1a', stopOpacity:1}} />
+              <radialGradient id="tweeterGradient" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" style={{stopColor:'rgba(236, 72, 153, 0.4)', stopOpacity:1}} />
+                <stop offset="100%" style={{stopColor:'rgba(147, 51, 234, 0.6)', stopOpacity:1}} />
               </radialGradient>
               
-              <radialGradient id="innerCone" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" style={{stopColor:'#5a5a5a', stopOpacity:1}} />
-                <stop offset="100%" style={{stopColor:'#2a2a2a', stopOpacity:1}} />
+              <radialGradient id="tweeterInner" cx="30%" cy="30%" r="70%">
+                <stop offset="0%" style={{stopColor:'rgba(255, 255, 255, 0.3)', stopOpacity:1}} />
+                <stop offset="100%" style={{stopColor:'rgba(147, 51, 234, 0.4)', stopOpacity:1}} />
               </radialGradient>
+              
+              <radialGradient id="wooferDreamy" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" style={{stopColor:'rgba(59, 130, 246, 0.3)', stopOpacity:1}} />
+                <stop offset="100%" style={{stopColor:'rgba(147, 51, 234, 0.5)', stopOpacity:1}} />
+              </radialGradient>
+              
+              <radialGradient id="wooferCone" cx="30%" cy="30%" r="70%">
+                <stop offset="0%" style={{stopColor:'rgba(255, 255, 255, 0.2)', stopOpacity:1}} />
+                <stop offset="50%" style={{stopColor:'rgba(236, 72, 153, 0.3)', stopOpacity:1}} />
+                <stop offset="100%" style={{stopColor:'rgba(147, 51, 234, 0.4)', stopOpacity:1}} />
+              </radialGradient>
+              
+              <radialGradient id="wooferInner" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" style={{stopColor:'rgba(255, 255, 255, 0.3)', stopOpacity:1}} />
+                <stop offset="100%" style={{stopColor:'rgba(59, 130, 246, 0.4)', stopOpacity:1}} />
+              </radialGradient>
+              
+              <radialGradient id="centerGradient" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" style={{stopColor:'rgba(255, 255, 255, 0.4)', stopOpacity:1}} />
+                <stop offset="100%" style={{stopColor:'rgba(236, 72, 153, 0.6)', stopOpacity:1}} />
+              </radialGradient>
+              
+              <linearGradient id="waveGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style={{stopColor:'rgba(147, 51, 234, 0.6)', stopOpacity:1}} />
+                <stop offset="100%" style={{stopColor:'rgba(236, 72, 153, 0.4)', stopOpacity:1}} />
+              </linearGradient>
+              
+              <linearGradient id="waveGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style={{stopColor:'rgba(236, 72, 153, 0.5)', stopOpacity:1}} />
+                <stop offset="100%" style={{stopColor:'rgba(59, 130, 246, 0.3)', stopOpacity:1}} />
+              </linearGradient>
+              
+              <linearGradient id="waveGradient3" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style={{stopColor:'rgba(59, 130, 246, 0.4)', stopOpacity:1}} />
+                <stop offset="100%" style={{stopColor:'rgba(147, 51, 234, 0.2)', stopOpacity:1}} />
+              </linearGradient>
             </defs>
           </svg>
         </div>
       </motion.div>
 
-      {/* Rhythm indicator text */}
+      {/* Dreamy rhythm indicator text */}
       <div className="text-center">
-        <div className="text-xs text-gray-400 font-semibold">RHYTHM</div>
-        <div className="text-xs text-gray-500">8th Notes</div>
+        <div className="bg-white/10 backdrop-blur-md rounded-full px-3 py-1 border border-white/20 shadow-lg">
+          <div className="text-xs text-white/90 font-semibold">RHYTHM</div>
+          <div className="text-xs text-white/70">8th Notes</div>
+        </div>
       </div>
 
-      {/* Visual beat indicator */}
-      <div className="flex space-x-1">
+      {/* Soft visual beat indicator */}
+      <div className="flex space-x-1.5">
         {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
-            className="w-2 h-2 rounded-full bg-gray-600"
+            className="w-2.5 h-2.5 rounded-full border border-white/20"
             animate={{
               backgroundColor: isPulsing && (Math.floor((currentTime - gameStartTime) / eighthNoteInterval) % 8) === i
-                ? '#60a5fa' // blue-400
-                : '#4b5563' // gray-600
+                ? 'rgba(236, 72, 153, 0.8)'
+                : 'rgba(255, 255, 255, 0.2)',
+              boxShadow: isPulsing && (Math.floor((currentTime - gameStartTime) / eighthNoteInterval) % 8) === i
+                ? '0 0 10px rgba(236, 72, 153, 0.6)'
+                : '0 0 5px rgba(255, 255, 255, 0.1)',
+              scale: isPulsing && (Math.floor((currentTime - gameStartTime) / eighthNoteInterval) % 8) === i
+                ? 1.3 : 1
             }}
-            transition={{ duration: 0.1 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
           />
         ))}
       </div>
