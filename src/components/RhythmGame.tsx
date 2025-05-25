@@ -6,10 +6,10 @@ import { useDrumStore } from '../stores/drumStore';
 import { useKeyBindings } from '../hooks/useKeyBindings';
 import { BeatMap, HitResult, BeatMapNote } from '../lib/types';
 import { DrumType } from '../lib/constants';
-import { BASIC_ROCK_BEAT_MAP } from '../lib/beatMaps';
 import { NoteHighway } from './NoteHighway';
 
 interface RhythmGameProps {
+  beatMap: BeatMap;
   onGameComplete: (finalScore: number, stats: GameStats) => void;
 }
 
@@ -23,11 +23,10 @@ interface GameStats {
   accuracy: number;
 }
 
-export const RhythmGame = ({ onGameComplete }: RhythmGameProps) => {
+export const RhythmGame = ({ beatMap, onGameComplete }: RhythmGameProps) => {
   const { gameState, setGameState } = useDrumStore();
   const { triggerDrum } = useKeyBindings();
   
-  const [beatMap] = useState<BeatMap>(BASIC_ROCK_BEAT_MAP);
   const [gameStats, setGameStats] = useState<GameStats>({
     notesHit: 0,
     totalNotes: beatMap.notes.length,
@@ -150,10 +149,10 @@ export const RhythmGame = ({ onGameComplete }: RhythmGameProps) => {
         'f': 'kick',
         'j': 'snare',
         'h': 'closedHiHat',
+        'y': 'openHiHat',
         'r': 'highTom',
         't': 'midTom',
         'g': 'floorTom',
-        'y': 'openHiHat',
         'u': 'crash',
         'k': 'ride',
       };
@@ -177,12 +176,6 @@ export const RhythmGame = ({ onGameComplete }: RhythmGameProps) => {
     ((currentTime - startTimeRef.current) / beatMap.duration) * 100,
     100
   );
-
-  // Countdown calculation for preparation phase
-  const timeElapsed = currentTime - startTimeRef.current;
-  const preparationTime = 3000; // 3 seconds
-  const isInPreparation = timeElapsed < preparationTime;
-  const countdownSeconds = Math.ceil((preparationTime - timeElapsed) / 1000);
 
   return (
     <div className="w-full max-w-4xl mx-auto">
@@ -248,7 +241,7 @@ export const RhythmGame = ({ onGameComplete }: RhythmGameProps) => {
             <div className="text-sm">Snare</div>
           </div>
           <div className="bg-yellow-500/20 p-3 rounded">
-            <div className="font-bold">H</div>
+            <div className="font-bold">H / Y</div>
             <div className="text-sm">Hi-Hat</div>
           </div>
         </div>

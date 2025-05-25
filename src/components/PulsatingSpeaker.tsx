@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 
 interface PulsatingSpeakerProps {
   gameStartTime: number;
@@ -22,8 +21,7 @@ export const PulsatingSpeaker = ({ gameStartTime, currentTime, bpm }: PulsatingS
     // Skip if game hasn't started yet
     if (timeInGame < 0) return;
     
-    // Calculate which 8th note we're on
-    const currentEighthNote = Math.floor(timeInGame / eighthNoteInterval);
+    // Calculate time into current 8th note
     const timeIntoCurrentEighthNote = timeInGame % eighthNoteInterval;
     
     // Pulse for the first 200ms of each 8th note

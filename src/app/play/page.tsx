@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useDrumStore } from '../../stores/drumStore';
 import { RhythmGame } from '../../components/RhythmGame';
+import { BEAT_MAPS } from '../../lib/beatMaps';
+import { BeatMap } from '../../lib/types';
 
 interface GameStats {
   notesHit: number;
@@ -19,7 +21,8 @@ interface GameStats {
 export default function PlayPage() {
   const router = useRouter();
   const { setGameState, resetGame } = useDrumStore();
-  const [countdown, setCountdown] = useState<number | null>(3);
+  const [selectedTrack, setSelectedTrack] = useState<BeatMap | null>(null);
+  const [countdown, setCountdown] = useState<number | null>(null);
   const [finalScore, setFinalScore] = useState<number | null>(null);
   const [finalStats, setFinalStats] = useState<GameStats | null>(null);
 
@@ -42,6 +45,19 @@ export default function PlayPage() {
     router.push('/');
   };
 
+  const handleTrackSelect = (beatMap: BeatMap) => {
+    setSelectedTrack(beatMap);
+    setCountdown(3);
+  };
+
+  const handleBackToTrackSelect = () => {
+    setSelectedTrack(null);
+    setCountdown(null);
+    setFinalScore(null);
+    setFinalStats(null);
+    resetGame();
+  };
+
   const handleGameComplete = (score: number, stats: GameStats) => {
     setFinalScore(score);
     setFinalStats(stats);
@@ -55,16 +71,104 @@ export default function PlayPage() {
     resetGame();
   };
 
+  // Track selection screen
+  if (!selectedTrack) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-black to-pink-900 text-white">
+        {/* Header */}
+        <header className="flex justify-between items-center p-6">
+          <h1 className="text-2xl font-bold">🎵 Choose Your Track</h1>
+          <button
+            onClick={handleBackToMenu}
+            className="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg transition-colors"
+          >
+            Back to Kit
+          </button>
+        </header>
+
+        {/* Track Selection */}
+        <main className="flex-1 flex items-center justify-center px-6">
+          <div className="max-w-4xl w-full">
+            <motion.div
+              className="text-center mb-8"
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-3xl font-bold mb-4">Select a Rhythm Challenge</h2>
+              <p className="text-gray-300">Choose your difficulty and start drumming!</p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {Object.entries(BEAT_MAPS).map(([key, beatMap], index) => (
+                <motion.div
+                  key={key}
+                  className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all cursor-pointer group"
+                  initial={{ y: 50, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleTrackSelect(beatMap)}
+                >
+                  <div className="text-center">
+                    <div className="text-4xl mb-4">
+                      {key === 'basicRock' ? '🥁' : 
+                       key === 'countryRock' ? '🤠' : 
+                       key === 'heavyRock' ? '🔥' : '🎵'}
+                    </div>
+                    <h3 className="text-2xl font-bold mb-2">{beatMap.name}</h3>
+                    <p className="text-gray-400 mb-4">{beatMap.artist}</p>
+                    
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                      <div className="bg-black/30 rounded-lg p-3">
+                        <div className="text-sm text-gray-400">BPM</div>
+                        <div className="text-xl font-bold">{beatMap.bpm}</div>
+                      </div>
+                      <div className="bg-black/30 rounded-lg p-3">
+                        <div className="text-sm text-gray-400">Duration</div>
+                        <div className="text-xl font-bold">{Math.round(beatMap.duration / 1000)}s</div>
+                      </div>
+                    </div>
+
+                    <div className="text-sm text-gray-300 mb-4">
+                      {key === 'basicRock' 
+                        ? 'Classic rock pattern with varied hi-hat timing. Great for learning complex rhythms!'
+                        : key === 'countryRock'
+                        ? 'Simple alternating kick-snare pattern. Perfect for beginners learning steady rhythm!'
+                        : key === 'heavyRock'
+                        ? 'Aggressive open hi-hat pattern with double kicks. For experienced drummers seeking intensity!'
+                        : 'A rhythm challenge awaits!'
+                      }
+                    </div>
+
+                    <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg p-3 group-hover:from-purple-500/30 group-hover:to-pink-500/30 transition-all">
+                      <div className="text-sm font-semibold">
+                        {key === 'basicRock' ? 'Intermediate' : 
+                         key === 'countryRock' ? 'Beginner' :
+                         key === 'heavyRock' ? 'Advanced' : 'Unknown'}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-black to-pink-900 text-white">
       {/* Header */}
       <header className="flex justify-between items-center p-6">
-        <h1 className="text-2xl font-bold">🎵 Basic Rock Challenge</h1>
+        <h1 className="text-2xl font-bold">🎵 {selectedTrack.name} Challenge</h1>
         <button
-          onClick={handleBackToMenu}
+          onClick={handleBackToTrackSelect}
           className="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg transition-colors"
         >
-          Back to Kit
+          Back to Tracks
         </button>
       </header>
 
@@ -141,10 +245,10 @@ export default function PlayPage() {
                 Play Again
               </button>
               <button
-                onClick={handleBackToMenu}
+                onClick={handleBackToTrackSelect}
                 className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 px-8 py-3 rounded-lg font-semibold transition-all"
               >
-                Back to Menu
+                Choose Track
               </button>
             </div>
           </motion.div>
@@ -156,7 +260,7 @@ export default function PlayPage() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6 }}
             >
-              <RhythmGame onGameComplete={handleGameComplete} />
+              <RhythmGame beatMap={selectedTrack} onGameComplete={handleGameComplete} />
             </motion.div>
           </div>
         )}

@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { BeatMapNote, BeatMap, HitResult } from '../lib/types';
-import { DrumType, DRUM_KIT_CONFIG } from '../lib/constants';
+import { DrumType } from '../lib/constants';
 import { PulsatingSpeaker } from './PulsatingSpeaker';
 
 interface NoteHighwayProps {
@@ -73,48 +73,60 @@ export const NoteHighway = ({
     let closestTimeDiff = Infinity;
 
     visibleNotes.forEach(note => {
-      if (note.drum === drum && !note.isHit) {
-        const timeDiff = Math.abs(note.time - timeInGame);
-        if (timeDiff < closestTimeDiff && timeDiff <= HIT_WINDOW_MISS) {
-          closestNote = note;
-          closestTimeDiff = timeDiff;
+      if (!note.isHit) {
+        // Allow hi-hat cross-compatibility: either H or Y key can hit either hi-hat type
+        const isHiHatMatch = (drum === 'closedHiHat' || drum === 'openHiHat') && 
+                            (note.drum === 'closedHiHat' || note.drum === 'openHiHat');
+        const isExactMatch = note.drum === drum;
+        
+        if (isHiHatMatch || isExactMatch) {
+          const timeDiff = Math.abs(note.time - timeInGame);
+          if (timeDiff < closestTimeDiff && timeDiff <= HIT_WINDOW_MISS) {
+            closestNote = note;
+            closestTimeDiff = timeDiff;
+          }
         }
       }
     });
 
-    if (closestNote) {
-      // Determine hit quality
-      let timing: 'perfect' | 'good' | 'miss';
-      let score: number;
-      
-      if (closestTimeDiff <= HIT_WINDOW_PERFECT) {
-        timing = 'perfect';
-        score = 100;
-      } else if (closestTimeDiff <= HIT_WINDOW_GOOD) {
-        timing = 'good';
-        score = 50;
-      } else {
-        timing = 'miss';
-        score = 0;
-      }
+    // Early return if no note found
+    if (!closestNote) return;
 
-      // Mark note as hit and trigger immediate re-render
-      setVisibleNotes(prev => 
-        prev.map(note => 
-          note.id === closestNote!.id 
-            ? { ...note, isHit: true, hitResult: timing }
-            : note
-        )
-      );
-
-      // Send hit result
-      onNoteHit({
-        drum,
-        timing,
-        score,
-        timestamp: currentTime,
-      });
+    // Determine hit quality
+    let timing: 'perfect' | 'good' | 'miss';
+    let score: number;
+    
+    if (closestTimeDiff <= HIT_WINDOW_PERFECT) {
+      timing = 'perfect';
+      score = 100;
+    } else if (closestTimeDiff <= HIT_WINDOW_GOOD) {
+      timing = 'good';
+      score = 50;
+    } else {
+      timing = 'miss';
+      score = 0;
     }
+
+    // Store the drum type and note ID for use in callbacks
+    const hitDrumType = (closestNote as VisibleNote).drum;
+    const noteId = (closestNote as VisibleNote).id;
+
+    // Mark note as hit and trigger immediate re-render
+    setVisibleNotes(prev => 
+      prev.map(note => 
+        note.id === noteId 
+          ? { ...note, isHit: true, hitResult: timing }
+          : note
+      )
+    );
+
+    // Send hit result with the original note's drum type
+    onNoteHit({
+      drum: hitDrumType,
+      timing,
+      score,
+      timestamp: currentTime,
+    });
   }, [currentTime, gameStartTime, visibleNotes, onNoteHit]);
 
   // Calculate note positions and manage visible notes
@@ -337,7 +349,7 @@ export const NoteHighway = ({
             >
               {note.drum === 'kick' ? 'F' :
                note.drum === 'snare' ? 'J' :
-               note.drum === 'closedHiHat' ? 'H' : ''}
+               note.drum === 'closedHiHat' || note.drum === 'openHiHat' ? 'H' : ''}
             </motion.span>
             
             {/* Enhanced hit feedback with dreamy floating animation */}
@@ -451,7 +463,9 @@ export const NoteHighway = ({
                  config.drum === 'closedHiHat' ? 'H' : ''}
               </div>
               <div className="text-xs text-white/80">
-              {DRUM_KIT_CONFIG[config.drum as DrumType]?.label}
+                {config.drum === 'kick' ? 'Kick' :
+                 config.drum === 'snare' ? 'Snare' :
+                 config.drum === 'closedHiHat' ? 'Hi-Hat' : ''}
               </div>
             </div>
           </div>
