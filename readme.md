@@ -14,15 +14,16 @@ Table of Contents
 	7.	Local Setup
 	8.	Developing & Debugging
 	9.	Adding New Sounds
-	10.	Roadmap
-	11.	Contributing
-	12.	License
+	10.	Deployment
+	11.	Roadmap
+	12.	Contributing
+	13.	License
 
 ⸻
 
 1. Project Vision
 	•	Create an accessible practice tool where beginners can tap out grooves without owning drums.
-	•	Combine a clickable / tappable on-screen kit with classic Guitar Hero style “note highway” gameplay to teach timing.
+	•	Combine a clickable / tappable on-screen kit with classic Guitar Hero style "note highway" gameplay to teach timing.
 	•	Keep latency minimal, assets lightweight and UI intuitive so the game works on desktop and mobile.
 
 2. Gameplay Features
@@ -31,9 +32,10 @@ Feature	MVP	Notes
 Clickable drum kit	✅	Visual kit with labels + animated hit states.
 Keyboard play	✅	Customisable bindings (saved to localStorage).
 Audio playback	✅	Pre-loaded WAV samples for: kick, snare, four toms, ride, crash, closed HH, open HH.
-Beat mode	✅	“BEATS” menu item launches a track. • 3-2-1 countdown. • Scrolling note highway (future: BPM adaptable). • Hit / Miss feedback rings. • Final score screen.
+Beat mode	✅	"BEATS" menu item launches a track. • 3-2-1 countdown. • Scrolling note highway (future: BPM adaptable). • Hit / Miss feedback rings. • Final score screen.
+Custom BPM	✅	Adjustable tempo (30-200 BPM) for each track individually.
+Multiple tracks	✅	4 difficulty levels: Country Rock (Beginner), Basic Rock (Intermediate), Heavy Rock (Advanced), Funk Rock (Master).
 Settings page	✅	Remap keys, mute/solo voices, latency calibration (future).
-Multiple tracks	⬜️	JSON beat maps loaded dynamically.
 Mobile multi-touch	⬜️	Optimise hit zones + CSS resize.
 Social share	⬜️	Share final score / challenge link.
 
@@ -133,15 +135,47 @@ Node ≥ 20 + pnpm ≥ 9 recommended for optimal performance.
 	3.	Update DrumKitConfig (label, default key).
 	4.	Add mapping to any existing beat-map JSON if needed.
 
-10. Roadmap
+10. Deployment
+
+### Vercel (Recommended - FREE)
+
+1. **Install Vercel CLI:**
+   ```bash
+   npm i -g vercel
+   ```
+
+2. **Deploy:**
+   ```bash
+   npm run deploy
+   # or
+   vercel --prod
+   ```
+
+3. **First-time setup:**
+   - Link to your GitHub account
+   - Choose project name
+   - Select production settings
+
+### Alternative Options:
+
+- **Netlify**: Also free, drag-and-drop deployment
+- **GitHub Pages**: Free for public repos (requires static export)
+- **Railway**: $5/month, includes database if needed later
+
+### Custom Domain (Optional):
+- Add your domain in Vercel dashboard
+- Update DNS records as instructed
+- Automatic HTTPS included
+
+11. Roadmap
 
 Milestone	Description
-v0.2	Multiple difficulty tracks, BPM selector.
+v0.2	Multiple difficulty tracks, BPM selector. ✅
 v0.3	Mobile vibration feedback, touch drums layout.
 v0.4	User high-scores saved to Supabase.
 v1.0	Community beat editor & shareable links.
 
-11. Contributing
+12. Contributing
 
 Pull requests are welcome! Please open an issue first to discuss significant changes.
 	1.	Fork → create branch feature/XYZ
@@ -149,6 +183,6 @@ Pull requests are welcome! Please open an issue first to discuss significant cha
 	3.	Write tests & ensure pnpm test passes
 	4.	Open PR – the CI will run lint + unit tests.
 
-12. License
+13. License
 
 This project is released under the MIT License. Drum samples remain the property of their respective creators; see public/audio/README.md for attribution.
