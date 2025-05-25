@@ -130,99 +130,157 @@ export default function PlayPage() {
               <p className="text-gray-300">Choose your difficulty and start drumming!</p>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="space-y-6">
               {Object.entries(BEAT_MAPS).map(([key, beatMap], index) => {
                 // Each track has its own BPM state
                 const trackBpm = trackBpmSettings[beatMap.name] || beatMap.bpm;
+                const difficultyColor = {
+                  'basicRock': 'from-amber-400 to-orange-500',
+                  'countryRock': 'from-green-400 to-emerald-500', 
+                  'heavyRock': 'from-red-400 to-rose-500',
+                  'funkRock': 'from-purple-400 to-violet-500'
+                }[key] || 'from-gray-400 to-gray-500';
                 
+                const difficultyLevel = {
+                  'basicRock': 'Intermediate',
+                  'countryRock': 'Beginner', 
+                  'heavyRock': 'Advanced',
+                  'funkRock': 'Master'
+                }[key] || 'Unknown';
+
                 return (
                   <motion.div
                     key={beatMap.name}
-                    className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:border-white/40 transition-all duration-300"
-                    whileHover={{ scale: 1.02, y: -5 }}
-                    initial={{ y: 50, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
+                    className="relative bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 rounded-2xl border-2 border-gray-600 shadow-2xl overflow-hidden"
+                    whileHover={{ scale: 1.01, y: -4 }}
+                    initial={{ x: -100, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
                     transition={{ duration: 0.6, delay: index * 0.1 }}
                   >
-                    <div className="text-center">
-                      <div className="text-4xl mb-4">
-                        {key === 'basicRock' ? '🥁' : 
-                         key === 'countryRock' ? '🤠' : 
-                         key === 'heavyRock' ? '🔥' : 
-                         key === 'funkRock' ? '🎸' : '🎵'}
-                      </div>
-                      <h3 className="text-2xl font-bold mb-2">{beatMap.name}</h3>
-                      <p className="text-gray-400 mb-4">{beatMap.artist}</p>
+                    {/* Horizontal Layout */}
+                    <div className="flex items-center p-6">
                       
-                      <div className="grid grid-cols-2 gap-4 mb-6">
-                        <div className="bg-black/30 rounded-lg p-3">
-                          <div className="text-sm text-gray-400">Default BPM</div>
-                          <div className="text-xl font-bold">{beatMap.bpm}</div>
+                      {/* Left Section - Track Info */}
+                      <div className="flex items-center space-x-6 flex-1">
+                        {/* Track Icon & Basic Info */}
+                        <div className="flex items-center space-x-4">
+                          <div className="text-5xl">
+                            {key === 'basicRock' ? '🥁' : 
+                             key === 'countryRock' ? '🤠' : 
+                             key === 'heavyRock' ? '🔥' : 
+                             key === 'funkRock' ? '🎸' : '🎵'}
+                          </div>
+                          <div>
+                            <h3 className="text-2xl font-bold text-white leading-tight">{beatMap.name}</h3>
+                            <p className="text-sm text-gray-300">{beatMap.artist}</p>
+                            <div className="flex items-center space-x-3 mt-2">
+                              {/* Difficulty Badge */}
+                              <div className={`px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r ${difficultyColor} text-white`}>
+                                {difficultyLevel}
+                              </div>
+                              {/* Power LED */}
+                              <div className="flex items-center space-x-1">
+                                <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${difficultyColor} shadow-lg animate-pulse`}></div>
+                                <span className="text-xs text-gray-400">PWR</span>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <div className="bg-black/30 rounded-lg p-3">
-                          <div className="text-sm text-gray-400">Difficulty</div>
-                          <div className="text-sm font-bold">
-                            {key === 'basicRock' ? 'Intermediate' : 
-                             key === 'countryRock' ? 'Beginner' : 
-                             key === 'heavyRock' ? 'Advanced' : 
-                             key === 'funkRock' ? 'Master' : 'Unknown'}
+
+                        {/* Default BPM Display */}
+                        <div className="bg-black/50 rounded-lg p-4 border border-gray-600 min-w-[100px]">
+                          <div className="text-xs text-gray-400 mb-1 text-center">DEFAULT</div>
+                          <div className="text-xl font-mono font-bold text-center text-green-400">
+                            {beatMap.bpm}
+                            <span className="text-xs text-gray-400 ml-1">BPM</span>
                           </div>
                         </div>
                       </div>
 
-                      {/* BPM Selector */}
-                      <div className="mb-6">
-                        <div className="text-sm text-gray-400 mb-2">Custom BPM</div>
-                        <div className="flex items-center gap-3 justify-center">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setTrackBpmSettings({
-                                ...trackBpmSettings,
-                                [beatMap.name]: Math.max(30, trackBpm - 10)
-                              });
-                            }}
-                            className="bg-gray-700 hover:bg-gray-600 w-8 h-8 rounded-full flex items-center justify-center transition-colors text-white font-bold"
-                          >
-                            -
-                          </button>
-                          <div className="bg-black/50 rounded-lg px-4 py-2 min-w-[80px] text-center">
-                            <div className="text-lg font-bold text-white">{trackBpm}</div>
+                      {/* Center Section - BPM Control */}
+                      <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-600 mx-6">
+                        <div className="text-center">
+                          <div className="text-xs text-gray-400 mb-3">TEMPO CONTROL</div>
+                          
+                          {/* Horizontal BPM Control */}
+                          <div className="flex items-center space-x-4">
+                            {/* Decrease Button */}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setTrackBpmSettings({
+                                  ...trackBpmSettings,
+                                  [beatMap.name]: Math.max(30, trackBpm - 10)
+                                });
+                              }}
+                              className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 rounded-full flex items-center justify-center text-white font-bold shadow-lg border border-red-400 transition-all duration-200 active:scale-95"
+                            >
+                              -
+                            </button>
+                            
+                            {/* Digital BPM Display */}
+                            <div className="bg-black rounded-lg p-3 border border-gray-600 min-w-[80px]">
+                              <div className="text-xl font-mono font-bold text-green-400 text-center">
+                                {trackBpm.toString().padStart(3, '0')}
+                              </div>
+                            </div>
+
+                            {/* Increase Button */}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setTrackBpmSettings({
+                                  ...trackBpmSettings,
+                                  [beatMap.name]: Math.min(200, trackBpm + 10)
+                                });
+                              }}
+                              className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 rounded-full flex items-center justify-center text-white font-bold shadow-lg border border-green-400 transition-all duration-200 active:scale-95"
+                            >
+                              +
+                            </button>
                           </div>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setTrackBpmSettings({
-                                ...trackBpmSettings,
-                                [beatMap.name]: Math.min(200, trackBpm + 10)
-                              });
-                            }}
-                            className="bg-gray-700 hover:bg-gray-600 w-8 h-8 rounded-full flex items-center justify-center transition-colors text-white font-bold"
-                          >
-                            +
-                          </button>
-                        </div>
-                        <div className="text-xs text-gray-500 mt-1 text-center">
-                          {trackBpm < beatMap.bpm ? `${Math.round(((beatMap.bpm - trackBpm) / beatMap.bpm) * 100)}% Slower` : 
-                           trackBpm > beatMap.bpm ? `${Math.round(((trackBpm - beatMap.bpm) / beatMap.bpm) * 100)}% Faster` : 
-                           'Default Speed'}
+
+                          {/* Speed Indicator */}
+                          <div className="text-xs text-center mt-3">
+                            {trackBpm < beatMap.bpm ? (
+                              <span className="text-blue-400">
+                                ↓ {Math.round(((beatMap.bpm - trackBpm) / beatMap.bpm) * 100)}% SLOWER
+                              </span>
+                            ) : trackBpm > beatMap.bpm ? (
+                              <span className="text-red-400">
+                                ↑ {Math.round(((trackBpm - beatMap.bpm) / beatMap.bpm) * 100)}% FASTER
+                              </span>
+                            ) : (
+                              <span className="text-green-400">● DEFAULT SPEED</span>
+                            )}
+                          </div>
                         </div>
                       </div>
 
-                      <div className="text-sm text-gray-300 mb-4">
-                        {key === 'basicRock' ? 'Classic rock beat with hi-hat on every 8th note' :
-                         key === 'countryRock' ? 'Simple alternating kick-snare pattern' :
-                         key === 'heavyRock' ? 'Aggressive pattern with open hi-hat accents' :
-                         key === 'funkRock' ? 'Syncopated 16th note funk pattern with off-beat snares and kicks. Master-level challenge!' :
-                         'Unknown pattern'}
+                      {/* Right Section - Start Button */}
+                      <div className="flex flex-col items-center space-y-3">
+                        <button
+                          onClick={() => handleTrackSelect(beatMap)}
+                          className={`px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg border-2 bg-gradient-to-r ${difficultyColor} hover:shadow-xl text-white border-white/20 min-w-[160px]`}
+                        >
+                          <div className="flex items-center justify-center space-x-2">
+                            <span>▶</span>
+                            <span>START</span>
+                          </div>
+                        </button>
+                        
+                        {/* Custom BPM Indicator */}
+                        {trackBpm !== beatMap.bpm && (
+                          <div className="text-xs text-gray-400 bg-black/30 px-2 py-1 rounded">
+                            Custom: {trackBpm} BPM
+                          </div>
+                        )}
                       </div>
+                    </div>
 
-                      <button
-                        onClick={() => handleTrackSelect(beatMap)}
-                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105"
-                      >
-                        Start Track {trackBpm !== beatMap.bpm ? `(${trackBpm} BPM)` : ''}
-                      </button>
+                    {/* Bottom LED Strip */}
+                    <div className="absolute bottom-0 left-6 right-6 h-1 bg-gradient-to-r from-transparent via-gray-600 to-transparent">
+                      <div className="w-full h-full bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 animate-pulse"></div>
                     </div>
                   </motion.div>
                 );
