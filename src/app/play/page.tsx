@@ -22,23 +22,29 @@ export default function PlayPage() {
   const router = useRouter();
   const { setGameState, resetGame } = useDrumStore();
   const [selectedTrack, setSelectedTrack] = useState<BeatMap | null>(null);
+  const [trackBpmSettings, setTrackBpmSettings] = useState<Record<string, number>>({});
   const [countdown, setCountdown] = useState<number | null>(null);
   const [finalScore, setFinalScore] = useState<number | null>(null);
   const [finalStats, setFinalStats] = useState<GameStats | null>(null);
 
   useEffect(() => {
-    // Start countdown when page loads
+    // Countdown effect
     if (countdown === null) return;
 
-    if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer);
-    } else {
-      // Start the game
-      setGameState({ isPlaying: true, countdown: null });
+    if (countdown === 0) {
+      // Start the game with custom BPM
+      if (selectedTrack) {
+        const customBeatMap = createCustomBpmBeatMap(selectedTrack, trackBpmSettings[selectedTrack.name] || 50);
+        setSelectedTrack(customBeatMap);
+      }
       setCountdown(null);
+      return;
     }
-  }, [countdown, setGameState]);
+
+    // Count down
+    const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [countdown, selectedTrack, trackBpmSettings]);
 
   const handleBackToMenu = () => {
     resetGame();
@@ -47,6 +53,13 @@ export default function PlayPage() {
 
   const handleTrackSelect = (beatMap: BeatMap) => {
     setSelectedTrack(beatMap);
+    // Initialize BPM setting if not already set
+    if (!trackBpmSettings[beatMap.name]) {
+      setTrackBpmSettings(prev => ({
+        ...prev,
+        [beatMap.name]: beatMap.bpm
+      }));
+    }
     setCountdown(3);
   };
 
@@ -69,6 +82,24 @@ export default function PlayPage() {
     setFinalStats(null);
     setCountdown(3);
     resetGame();
+  };
+
+  // Create a modified beat map with custom BPM
+  const createCustomBpmBeatMap = (originalBeatMap: BeatMap, newBpm: number): BeatMap => {
+    const bpmRatio = originalBeatMap.bpm / newBpm; // How much to scale timing
+    const newDuration = originalBeatMap.duration * bpmRatio;
+    
+    const adjustedNotes = originalBeatMap.notes.map(note => ({
+      ...note,
+      time: note.time * bpmRatio
+    }));
+
+    return {
+      ...originalBeatMap,
+      bpm: newBpm,
+      duration: newDuration,
+      notes: adjustedNotes
+    };
   };
 
   // Track selection screen
@@ -100,62 +131,102 @@ export default function PlayPage() {
             </motion.div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {Object.entries(BEAT_MAPS).map(([key, beatMap], index) => (
-                <motion.div
-                  key={key}
-                  className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all cursor-pointer group"
-                  initial={{ y: 50, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.02, y: -5 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => handleTrackSelect(beatMap)}
-                >
-                  <div className="text-center">
-                    <div className="text-4xl mb-4">
-                      {key === 'basicRock' ? '🥁' : 
-                       key === 'countryRock' ? '🤠' : 
-                       key === 'heavyRock' ? '🔥' : 
-                       key === 'funkRock' ? '🎸' : '🎵'}
-                    </div>
-                    <h3 className="text-2xl font-bold mb-2">{beatMap.name}</h3>
-                    <p className="text-gray-400 mb-4">{beatMap.artist}</p>
-                    
-                    <div className="grid grid-cols-2 gap-4 mb-6">
-                      <div className="bg-black/30 rounded-lg p-3">
-                        <div className="text-sm text-gray-400">BPM</div>
-                        <div className="text-xl font-bold">{beatMap.bpm}</div>
+              {Object.entries(BEAT_MAPS).map(([key, beatMap], index) => {
+                // Each track has its own BPM state
+                const trackBpm = trackBpmSettings[beatMap.name] || beatMap.bpm;
+                
+                return (
+                  <motion.div
+                    key={beatMap.name}
+                    className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:border-white/40 transition-all duration-300"
+                    whileHover={{ scale: 1.02, y: -5 }}
+                    initial={{ y: 50, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                  >
+                    <div className="text-center">
+                      <div className="text-4xl mb-4">
+                        {key === 'basicRock' ? '🥁' : 
+                         key === 'countryRock' ? '🤠' : 
+                         key === 'heavyRock' ? '🔥' : 
+                         key === 'funkRock' ? '🎸' : '🎵'}
                       </div>
-                      <div className="bg-black/30 rounded-lg p-3">
-                        <div className="text-sm text-gray-400">Duration</div>
-                        <div className="text-xl font-bold">{Math.round(beatMap.duration / 1000)}s</div>
+                      <h3 className="text-2xl font-bold mb-2">{beatMap.name}</h3>
+                      <p className="text-gray-400 mb-4">{beatMap.artist}</p>
+                      
+                      <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div className="bg-black/30 rounded-lg p-3">
+                          <div className="text-sm text-gray-400">Default BPM</div>
+                          <div className="text-xl font-bold">{beatMap.bpm}</div>
+                        </div>
+                        <div className="bg-black/30 rounded-lg p-3">
+                          <div className="text-sm text-gray-400">Difficulty</div>
+                          <div className="text-sm font-bold">
+                            {key === 'basicRock' ? 'Intermediate' : 
+                             key === 'countryRock' ? 'Beginner' : 
+                             key === 'heavyRock' ? 'Advanced' : 
+                             key === 'funkRock' ? 'Master' : 'Unknown'}
+                          </div>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="text-sm text-gray-300 mb-4">
-                      {key === 'basicRock' 
-                        ? 'Classic rock pattern with varied hi-hat timing. Great for learning complex rhythms!'
-                        : key === 'countryRock'
-                        ? 'Simple alternating kick-snare pattern. Perfect for beginners learning steady rhythm!'
-                        : key === 'heavyRock'
-                        ? 'Aggressive open hi-hat pattern with double kicks. For experienced drummers seeking intensity!'
-                        : key === 'funkRock'
-                        ? 'Syncopated 16th note funk pattern with off-beat snares and kicks. Master-level challenge!'
-                        : 'A rhythm challenge awaits!'
-                      }
-                    </div>
-
-                    <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg p-3 group-hover:from-purple-500/30 group-hover:to-pink-500/30 transition-all">
-                      <div className="text-sm font-semibold">
-                        {key === 'basicRock' ? 'Intermediate' : 
-                         key === 'countryRock' ? 'Beginner' :
-                         key === 'heavyRock' ? 'Advanced' : 
-                         key === 'funkRock' ? 'Master' : 'Unknown'}
+                      {/* BPM Selector */}
+                      <div className="mb-6">
+                        <div className="text-sm text-gray-400 mb-2">Custom BPM</div>
+                        <div className="flex items-center gap-3 justify-center">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setTrackBpmSettings({
+                                ...trackBpmSettings,
+                                [beatMap.name]: Math.max(30, trackBpm - 10)
+                              });
+                            }}
+                            className="bg-gray-700 hover:bg-gray-600 w-8 h-8 rounded-full flex items-center justify-center transition-colors text-white font-bold"
+                          >
+                            -
+                          </button>
+                          <div className="bg-black/50 rounded-lg px-4 py-2 min-w-[80px] text-center">
+                            <div className="text-lg font-bold text-white">{trackBpm}</div>
+                          </div>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setTrackBpmSettings({
+                                ...trackBpmSettings,
+                                [beatMap.name]: Math.min(200, trackBpm + 10)
+                              });
+                            }}
+                            className="bg-gray-700 hover:bg-gray-600 w-8 h-8 rounded-full flex items-center justify-center transition-colors text-white font-bold"
+                          >
+                            +
+                          </button>
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1 text-center">
+                          {trackBpm < beatMap.bpm ? `${Math.round(((beatMap.bpm - trackBpm) / beatMap.bpm) * 100)}% Slower` : 
+                           trackBpm > beatMap.bpm ? `${Math.round(((trackBpm - beatMap.bpm) / beatMap.bpm) * 100)}% Faster` : 
+                           'Default Speed'}
+                        </div>
                       </div>
+
+                      <div className="text-sm text-gray-300 mb-4">
+                        {key === 'basicRock' ? 'Classic rock beat with hi-hat on every 8th note' :
+                         key === 'countryRock' ? 'Simple alternating kick-snare pattern' :
+                         key === 'heavyRock' ? 'Aggressive pattern with open hi-hat accents' :
+                         key === 'funkRock' ? 'Syncopated 16th note funk pattern with off-beat snares and kicks. Master-level challenge!' :
+                         'Unknown pattern'}
+                      </div>
+
+                      <button
+                        onClick={() => handleTrackSelect(beatMap)}
+                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105"
+                      >
+                        Start Track {trackBpm !== beatMap.bpm ? `(${trackBpm} BPM)` : ''}
+                      </button>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </main>

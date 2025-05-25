@@ -134,39 +134,54 @@ export const NoteHighway = ({
     const timeInGame = currentTime - gameStartTime;
     const lookAhead = 3000; // Reduced to 3000ms for better spacing - fewer notes visible at once
 
-    setVisibleNotes(prevNotes => {
-    const newVisibleNotes: VisibleNote[] = [];
-    
+    // First, check for missed notes (outside of state update)
+    const missedNotes: BeatMapNote[] = [];
     beatMap.notes.forEach((note, index) => {
       const noteId = `${note.time}-${note.drum}-${index}`;
       const timeUntilNote = note.time - timeInGame;
       
-      // Only show notes within look-ahead window
-      if (timeUntilNote <= lookAhead && timeUntilNote >= -HIT_WINDOW_MISS) {
-        // Calculate position - adjusted so note is at hit zone when timeUntilNote = 0
-        const yPosition = HIT_ZONE_Y + ((timeUntilNote / lookAhead) * (HIGHWAY_HEIGHT - HIT_ZONE_Y));
-          
-          // Find existing note to preserve hit state
-          const existingNote = prevNotes.find(n => n.id === noteId);
-        
-        newVisibleNotes.push({
-          id: noteId,
-          drum: note.drum,
-          time: note.time,
-          lane: note.lane,
-          yPosition: Math.max(HIT_ZONE_Y - 50, yPosition), // Allow notes slightly above hit zone
-          // Preserve hit state if it exists
-          isHit: existingNote?.isHit || false,
-          hitResult: existingNote?.hitResult,
-        });
-      }
-
       // Check for missed notes
       if (timeUntilNote < -HIT_WINDOW_MISS && !processedNotes.current.has(noteId)) {
         processedNotes.current.add(noteId);
-        onNoteMissed(note);
+        missedNotes.push(note);
       }
     });
+
+    // Process missed notes after state update
+    if (missedNotes.length > 0) {
+      // Use setTimeout to defer the callback to the next tick
+      setTimeout(() => {
+        missedNotes.forEach(note => onNoteMissed(note));
+      }, 0);
+    }
+
+    setVisibleNotes(prevNotes => {
+      const newVisibleNotes: VisibleNote[] = [];
+      
+      beatMap.notes.forEach((note, index) => {
+        const noteId = `${note.time}-${note.drum}-${index}`;
+        const timeUntilNote = note.time - timeInGame;
+        
+        // Only show notes within look-ahead window
+        if (timeUntilNote <= lookAhead && timeUntilNote >= -HIT_WINDOW_MISS) {
+          // Calculate position - adjusted so note is at hit zone when timeUntilNote = 0
+          const yPosition = HIT_ZONE_Y + ((timeUntilNote / lookAhead) * (HIGHWAY_HEIGHT - HIT_ZONE_Y));
+            
+          // Find existing note to preserve hit state
+          const existingNote = prevNotes.find(n => n.id === noteId);
+          
+          newVisibleNotes.push({
+            id: noteId,
+            drum: note.drum,
+            time: note.time,
+            lane: note.lane,
+            yPosition: Math.max(HIT_ZONE_Y - 50, yPosition), // Allow notes slightly above hit zone
+            // Preserve hit state if it exists
+            isHit: existingNote?.isHit || false,
+            hitResult: existingNote?.hitResult,
+          });
+        }
+      });
 
       return newVisibleNotes;
     });
