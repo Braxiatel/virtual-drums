@@ -42,6 +42,12 @@ export const RhythmGame = ({ beatMap, onGameComplete }: RhythmGameProps) => {
   const startTimeRef = useRef<number>(Date.now());
   const gameCompleteCallbackRef = useRef<(() => void) | undefined>(undefined);
   const currentTimeRef = useRef<number>(Date.now());
+  const gameStateRef = useRef(gameState);
+  const gameStatsRef = useRef(gameStats);
+
+  // Keep refs updated
+  gameStateRef.current = gameState;
+  gameStatsRef.current = gameStats;
 
   // Store the game completion callback in a ref to avoid dependency issues
   gameCompleteCallbackRef.current = () => {
@@ -98,10 +104,12 @@ export const RhythmGame = ({ beatMap, onGameComplete }: RhythmGameProps) => {
 
   // Handle note hits from the NoteHighway
   const handleNoteHit = useCallback((result: HitResult) => {
-    const newScore = gameState.score + result.score;
-    const newCombo = result.timing === 'miss' ? 0 : gameState.combo + 1;
-    const newNotesHit = (gameState.notesHit || 0) + (result.timing !== 'miss' ? 1 : 0);
-    const newMaxCombo = Math.max(gameState.maxCombo || 0, newCombo);
+    const currentGameState = gameStateRef.current;
+    
+    const newScore = currentGameState.score + result.score;
+    const newCombo = result.timing === 'miss' ? 0 : currentGameState.combo + 1;
+    const newNotesHit = (currentGameState.notesHit || 0) + (result.timing !== 'miss' ? 1 : 0);
+    const newMaxCombo = Math.max(currentGameState.maxCombo || 0, newCombo);
 
     setGameState({
       score: newScore,
@@ -121,7 +129,7 @@ export const RhythmGame = ({ beatMap, onGameComplete }: RhythmGameProps) => {
 
     // Trigger audio and visual feedback
     triggerDrum(result.drum);
-  }, [gameState.score, gameState.combo, gameState.notesHit, gameState.maxCombo, setGameState, setGameStats, triggerDrum]);
+  }, [setGameState, setGameStats, triggerDrum]);
 
   // Handle missed notes from the NoteHighway
   const handleNoteMissed = useCallback((note: BeatMapNote) => {

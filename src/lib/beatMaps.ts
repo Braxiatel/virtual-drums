@@ -237,8 +237,98 @@ export const HEAVY_ROCK_BEAT_MAP: BeatMap = {
   ],
 };
 
+// Funk Rock pattern with 16th note subdivisions: 8 parts per bar + syncopated 16th notes
+// 1. closed hi-hat + kick, 2. closed hi-hat, 3. closed hi-hat + snare, 4. closed hi-hat,
+// 4.5 snare (16th note), 5. closed hi-hat + kick, 5.5 snare (16th note), 6. closed hi-hat + kick,
+// 7. closed hi-hat + snare, 8. closed hi-hat, 8.5 kick (16th note)
+// BPM: 50 (same as other tracks) - Pattern repeats 4 times
+// NOTE: Uses 16th note subdivisions for funky syncopation - most challenging rhythm!
+export const FUNK_ROCK_BEAT_MAP: BeatMap = {
+  name: 'Funk Rock',
+  artist: 'Virtual Drums',
+  bpm: 50,
+  duration: 25000, // 25 seconds total: 3 seconds prep + 22 seconds track
+  notes: [
+    // Preparation time: 3 seconds of empty space before notes start
+    
+    // Bar 1 (3000-7800ms) - 8 eighth notes + 16th note subdivisions
+    // At 50 BPM: 8th note = 600ms, 16th note = 300ms
+    { drum: 'kick', time: 3000, lane: 0 },           // 1. kick + closed hi-hat
+    { drum: 'closedHiHat', time: 3000, lane: 1 },   
+    { drum: 'closedHiHat', time: 3600, lane: 1 },   // 2. closed hi-hat
+    { drum: 'snare', time: 4200, lane: 2 },         // 3. snare + closed hi-hat
+    { drum: 'closedHiHat', time: 4200, lane: 1 },   
+    { drum: 'closedHiHat', time: 4800, lane: 1 },   // 4. closed hi-hat
+    { drum: 'snare', time: 5100, lane: 2 },         // 4.5 snare (16th note)
+    { drum: 'kick', time: 5400, lane: 0 },           // 5. kick + closed hi-hat
+    { drum: 'closedHiHat', time: 5400, lane: 1 },   
+    { drum: 'snare', time: 5700, lane: 2 },         // 5.5 snare (16th note)
+    { drum: 'kick', time: 6000, lane: 0 },           // 6. kick + closed hi-hat
+    { drum: 'closedHiHat', time: 6000, lane: 1 },   
+    { drum: 'snare', time: 6600, lane: 2 },         // 7. snare + closed hi-hat
+    { drum: 'closedHiHat', time: 6600, lane: 1 },   
+    { drum: 'closedHiHat', time: 7200, lane: 1 },   // 8. closed hi-hat
+    { drum: 'kick', time: 7500, lane: 0 },           // 8.5 kick (16th note)
+
+    // Bar 2 (7800-12600ms) - same pattern
+    { drum: 'kick', time: 7800, lane: 0 },           // 1. kick + closed hi-hat
+    { drum: 'closedHiHat', time: 7800, lane: 1 },   
+    { drum: 'closedHiHat', time: 8400, lane: 1 },   // 2. closed hi-hat
+    { drum: 'snare', time: 9000, lane: 2 },         // 3. snare + closed hi-hat
+    { drum: 'closedHiHat', time: 9000, lane: 1 },   
+    { drum: 'closedHiHat', time: 9600, lane: 1 },   // 4. closed hi-hat
+    { drum: 'snare', time: 9900, lane: 2 },         // 4.5 snare (16th note)
+    { drum: 'kick', time: 10200, lane: 0 },          // 5. kick + closed hi-hat
+    { drum: 'closedHiHat', time: 10200, lane: 1 },  
+    { drum: 'snare', time: 10500, lane: 2 },        // 5.5 snare (16th note)
+    { drum: 'kick', time: 10800, lane: 0 },          // 6. kick + closed hi-hat
+    { drum: 'closedHiHat', time: 10800, lane: 1 },  
+    { drum: 'snare', time: 11400, lane: 2 },        // 7. snare + closed hi-hat
+    { drum: 'closedHiHat', time: 11400, lane: 1 },  
+    { drum: 'closedHiHat', time: 12000, lane: 1 },  // 8. closed hi-hat
+    { drum: 'kick', time: 12300, lane: 0 },          // 8.5 kick (16th note)
+
+    // Bar 3 (12600-17400ms) - same pattern
+    { drum: 'kick', time: 12600, lane: 0 },          // 1. kick + closed hi-hat
+    { drum: 'closedHiHat', time: 12600, lane: 1 },  
+    { drum: 'closedHiHat', time: 13200, lane: 1 },  // 2. closed hi-hat
+    { drum: 'snare', time: 13800, lane: 2 },        // 3. snare + closed hi-hat
+    { drum: 'closedHiHat', time: 13800, lane: 1 },  
+    { drum: 'closedHiHat', time: 14400, lane: 1 },  // 4. closed hi-hat
+    { drum: 'snare', time: 14700, lane: 2 },        // 4.5 snare (16th note)
+    { drum: 'kick', time: 15000, lane: 0 },          // 5. kick + closed hi-hat
+    { drum: 'closedHiHat', time: 15000, lane: 1 },  
+    { drum: 'snare', time: 15300, lane: 2 },        // 5.5 snare (16th note)
+    { drum: 'kick', time: 15600, lane: 0 },          // 6. kick + closed hi-hat
+    { drum: 'closedHiHat', time: 15600, lane: 1 },  
+    { drum: 'snare', time: 16200, lane: 2 },        // 7. snare + closed hi-hat
+    { drum: 'closedHiHat', time: 16200, lane: 1 },  
+    { drum: 'closedHiHat', time: 16800, lane: 1 },  // 8. closed hi-hat
+    { drum: 'kick', time: 17100, lane: 0 },          // 8.5 kick (16th note)
+
+    // Bar 4 (17400-22200ms) - same pattern
+    { drum: 'kick', time: 17400, lane: 0 },          // 1. kick + closed hi-hat
+    { drum: 'closedHiHat', time: 17400, lane: 1 },  
+    { drum: 'closedHiHat', time: 18000, lane: 1 },  // 2. closed hi-hat
+    { drum: 'snare', time: 18600, lane: 2 },        // 3. snare + closed hi-hat
+    { drum: 'closedHiHat', time: 18600, lane: 1 },  
+    { drum: 'closedHiHat', time: 19200, lane: 1 },  // 4. closed hi-hat
+    { drum: 'snare', time: 19500, lane: 2 },        // 4.5 snare (16th note)
+    { drum: 'kick', time: 19800, lane: 0 },          // 5. kick + closed hi-hat
+    { drum: 'closedHiHat', time: 19800, lane: 1 },  
+    { drum: 'snare', time: 20100, lane: 2 },        // 5.5 snare (16th note)
+    { drum: 'kick', time: 20400, lane: 0 },          // 6. kick + closed hi-hat
+    { drum: 'closedHiHat', time: 20400, lane: 1 },  
+    { drum: 'snare', time: 21000, lane: 2 },        // 7. snare + closed hi-hat
+    { drum: 'closedHiHat', time: 21000, lane: 1 },  
+    { drum: 'closedHiHat', time: 21600, lane: 1 },  // 8. closed hi-hat
+    { drum: 'kick', time: 21900, lane: 0 },          // 8.5 kick (16th note)
+  ],
+};
+
 export const BEAT_MAPS = {
   basicRock: BASIC_ROCK_BEAT_MAP,
   countryRock: COUNTRY_ROCK_BEAT_MAP,
   heavyRock: HEAVY_ROCK_BEAT_MAP,
+  funkRock: FUNK_ROCK_BEAT_MAP,
 }; 

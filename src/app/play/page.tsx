@@ -99,7 +99,7 @@ export default function PlayPage() {
               <p className="text-gray-300">Choose your difficulty and start drumming!</p>
             </motion.div>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {Object.entries(BEAT_MAPS).map(([key, beatMap], index) => (
                 <motion.div
                   key={key}
@@ -115,7 +115,8 @@ export default function PlayPage() {
                     <div className="text-4xl mb-4">
                       {key === 'basicRock' ? '🥁' : 
                        key === 'countryRock' ? '🤠' : 
-                       key === 'heavyRock' ? '🔥' : '🎵'}
+                       key === 'heavyRock' ? '🔥' : 
+                       key === 'funkRock' ? '🎸' : '🎵'}
                     </div>
                     <h3 className="text-2xl font-bold mb-2">{beatMap.name}</h3>
                     <p className="text-gray-400 mb-4">{beatMap.artist}</p>
@@ -138,6 +139,8 @@ export default function PlayPage() {
                         ? 'Simple alternating kick-snare pattern. Perfect for beginners learning steady rhythm!'
                         : key === 'heavyRock'
                         ? 'Aggressive open hi-hat pattern with double kicks. For experienced drummers seeking intensity!'
+                        : key === 'funkRock'
+                        ? 'Syncopated 16th note funk pattern with off-beat snares and kicks. Master-level challenge!'
                         : 'A rhythm challenge awaits!'
                       }
                     </div>
@@ -146,7 +149,8 @@ export default function PlayPage() {
                       <div className="text-sm font-semibold">
                         {key === 'basicRock' ? 'Intermediate' : 
                          key === 'countryRock' ? 'Beginner' :
-                         key === 'heavyRock' ? 'Advanced' : 'Unknown'}
+                         key === 'heavyRock' ? 'Advanced' : 
+                         key === 'funkRock' ? 'Master' : 'Unknown'}
                       </div>
                     </div>
                   </div>
